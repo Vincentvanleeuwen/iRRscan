@@ -5,11 +5,27 @@
 
 <script>
 import Nav from "./components/Nav.vue";
-
+import { fetchData } from "@/helpers/fetchData";
+import { convertToJSON } from "@/utils/convertToJSON";
+import { filterColumns } from "@/helpers/filterColumns";
+import { restructureData } from "@/helpers/restructureData";
+const endPoints = [
+  // "./data/nodes.json",
+  "./data/anb.json",
+  "./data/edges.json"
+];
 export default {
   name: "App",
   components: {
     Nav
+  },
+  mounted() {
+    fetchData(endPoints)
+      .then(convertToJSON)
+      .then(filterColumns)
+      .then(restructureData)
+      .then(result => console.log(result))
+      .catch(err => console.log(err));
   }
 };
 </script>
