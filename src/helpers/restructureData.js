@@ -1,7 +1,5 @@
 export const restructureData = arr => {
-
-  console.log(arr[0])
-
+  console.log(arr)
   return arr[0].reduce((acc, cur) => {
 
     //Check if location matches another entries' location, return the index
@@ -15,7 +13,7 @@ export const restructureData = arr => {
       acc['addresses'] = [];
 
     }
-    console.log('cur00', cur[0][0])
+
     cur[0].forEach(entry => {
 
       let collection;
@@ -77,16 +75,17 @@ export const restructureData = arr => {
 
       // check for unique property position from a person to check if its a person.
       if (correctType) {
-        console.log(correctType)
+
         if (correctType.position === null) {
 
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
-            console.log(attribute)
             switch (attribute.AttributeClassReference) {
-              case '_ID': correctType.id = attribute.Value
+              case '_ID': correctType.id = parseInt(attribute.Value)
                 break;
               case '_DATE_OF_BIRTH': correctType.date_of_birth = attribute.Value
+                break;
+              case '_DATE_OF_DEATH': correctType.date_of_death = attribute.Value
                 break;
               case 'iCOV_node_id': correctType.node_id = attribute.Value
                 break;
@@ -94,7 +93,7 @@ export const restructureData = arr => {
                 break;
               case '_LABEL': correctType.name = attribute.Value
                 break;
-              case '_DEPARTMENT_ID': correctType.department_id = attribute.Value
+              case '_DEPARTMENT_ID': correctType.department_id = parseInt(attribute.Value)
                 break;
               case '_SEX': correctType.sex = attribute.Value
                 break
@@ -108,17 +107,17 @@ export const restructureData = arr => {
         else if (correctType.managerID === null) {
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
-            console.log(attribute)
+
             switch (attribute.AttributeClassReference) {
-              case '_DEPARTMENT_ID': correctType.id = attribute.Value
+              case '_DEPARTMENT_ID': correctType.id = parseInt(attribute.Value)
                 break;
-              case 'iCOV_node_id': correctType.node_id = attribute.Value
+              case 'iCOV_node_id': correctType.node_id = parseInt(attribute.Value)
                 break;
-              case '_MANAGER_ID': correctType.managerID = attribute.Value
+              case '_MANAGER_ID': correctType.managerID = parseInt(attribute.Value)
                 break;
               case '_DEPARTMENT_NAME': correctType.name = attribute.Value
                 break;
-              case '_LOCATION_ID': correctType.locationID = attribute.Value
+              case '_LOCATION_ID': correctType.locationID = parseInt(attribute.Value)
                 break;
 
             }
@@ -131,11 +130,11 @@ export const restructureData = arr => {
         else if (correctType.city === null) {
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
-            console.log(attribute)
+
             switch (attribute.AttributeClassReference) {
-              case '_DEPARTMENT_ID': correctType.id = attribute.Value
+              case '_DEPARTMENT_ID': correctType.id = parseInt(attribute.Value)
                 break;
-              case 'iCOV_node_id': correctType.node_id = attribute.Value
+              case 'iCOV_node_id': correctType.node_id = parseInt(attribute.Value)
                 break;
               case '_COUNTRY': correctType.country = attribute.Value
                 break;
@@ -158,20 +157,25 @@ export const restructureData = arr => {
         }
       }
     })
+    console.log(arr[1][0][0])
+    arr[1][0][0].forEach(relation => {
+      let relationEdges = relation.EdgesInSet[0]
 
-    // if(newPerson.id) {
-    //   console.log('newperson before push', newPerson);
-    //   acc.people.push(newPerson)
-    // }
-    // if(newDepartment.id) {
-    //   acc.departments.push(newDepartment)
-    // }
-    // if(newAddress.node_id) {
-    //   acc.addresses.push(newAddress)
-    // }
+      if(!relationEdges) {
 
-    console.log('acc', acc);
+        relationEdges = relation.EdgesInSet.Edge;
+        // console.log(relationEdges)
+      }
+      console.log(relationEdges.FromNodeSID, relationEdges.ToNodeSID, relationEdges.EdgeCategory )
+      acc.forEach(item => {
+        console.log('???', item);
+
+      })
+      // console.log(thisItem)
+    });
+
     return acc;
+
   }, []);
 
 };
