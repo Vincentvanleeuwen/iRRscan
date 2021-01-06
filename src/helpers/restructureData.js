@@ -1,12 +1,9 @@
 export const restructureData = arr => {
 
-  console.log(arr)
+  console.log(arr[0])
 
-  return arr.reduce((acc, cur) => {
+  return arr[0].reduce((acc, cur) => {
 
-    let newPerson = null;
-    let newDepartment = null;
-    let newAddress = null;
     //Check if location matches another entries' location, return the index
     const itemIndex = acc.findIndex(item => console.log(item.people));
     // Check if index exists
@@ -19,19 +16,21 @@ export const restructureData = arr => {
 
     }
     console.log('cur00', cur[0][0])
-    cur[0][0].forEach(entry => {
-      let collection = entry.AttributeCollection;
+    cur[0].forEach(entry => {
 
-      // Change structure of object when theres only one or no item.
-      if(!collection.length || collection.length === 1) {
-        collection = []
-        collection.push(entry.AttributeCollection.Attribute)
+      let collection;
+      let correctType= null;
+
+      if(entry.AttributeCollection) {
+        collection = entry.AttributeCollection;
+        // Change structure of object when theres only one or no item.
+        if(!collection.length || collection.length === 1) {
+          collection = []
+          collection.push(entry.AttributeCollection.Attribute)
+        }
       }
 
       collection.forEach(attribute => {
-        console.log(attribute)
-
-        let correctType;
 
         if(attribute.AttributeClassReference === "iCOV_node_type"){
           if (attribute.Value === "PEOPLE") {
@@ -45,7 +44,6 @@ export const restructureData = arr => {
               date_of_death: null, // = [anb.xml] _DATE_OF_DEATH, if null = not dead.
               position: null, // = [anb.xml] iCOV_node_subtype
               department_id: null, // = [anb.xml] _DEPARTMENT_ID
-              department_node_id: null, // = [anb.xml] iCOV_node_id
               relations: []
             };
 
@@ -56,6 +54,7 @@ export const restructureData = arr => {
               node_id: null, // = [anb.xml] iCOV_node_id
               name: null, // = [anb.xml] _DEPARTMENT_NAME
               managerID: null, // = [anb.xml] _MANAGER_ID
+              locationID: null,
               relations: []
             };
           } else if (attribute.Value === "ADDRESS") {
@@ -71,40 +70,105 @@ export const restructureData = arr => {
               relations: []
             };
 
-          } else {
-            return
           }
         }
 
-        // check for unique property position from a person to check if its a person.
-        if (correctType.position) {
-          console.log('yay new person', attribute);
-        }
-        // if (newDepartment !== {}) {
-        //
-        // }
-        // if (newAddress !== {}) {
-        //
-        // }
-        // if(attribute.AttributeClassReference === "_ID") {
-        //   newPerson.id = +attribute.Value
-        //   return newPerson;
-        // }
-
       })
 
+      // check for unique property position from a person to check if its a person.
+      if (correctType) {
+        console.log(correctType)
+        if (correctType.position === null) {
+
+          let collection = entry.AttributeCollection;
+          collection.forEach(attribute => {
+            console.log(attribute)
+            switch (attribute.AttributeClassReference) {
+              case '_ID': correctType.id = attribute.Value
+                break;
+              case '_DATE_OF_BIRTH': correctType.date_of_birth = attribute.Value
+                break;
+              case 'iCOV_node_id': correctType.node_id = attribute.Value
+                break;
+              case 'iCOV_node_subtype': correctType.position = attribute.Value
+                break;
+              case '_LABEL': correctType.name = attribute.Value
+                break;
+              case '_DEPARTMENT_ID': correctType.department_id = attribute.Value
+                break;
+              case '_SEX': correctType.sex = attribute.Value
+                break
+            }
+          })
+
+          acc.people.push(correctType);
+          correctType = null;
+        }
+        // check for unique property managerID from a department to check if its a department.
+        else if (correctType.managerID === null) {
+          let collection = entry.AttributeCollection;
+          collection.forEach(attribute => {
+            console.log(attribute)
+            switch (attribute.AttributeClassReference) {
+              case '_DEPARTMENT_ID': correctType.id = attribute.Value
+                break;
+              case 'iCOV_node_id': correctType.node_id = attribute.Value
+                break;
+              case '_MANAGER_ID': correctType.managerID = attribute.Value
+                break;
+              case '_DEPARTMENT_NAME': correctType.name = attribute.Value
+                break;
+              case '_LOCATION_ID': correctType.locationID = attribute.Value
+                break;
+
+            }
+          })
+
+          acc.departments.push(correctType);
+          correctType = null;
+        }
+        // check for unique property city from a address to check if its a address.
+        else if (correctType.city === null) {
+          let collection = entry.AttributeCollection;
+          collection.forEach(attribute => {
+            console.log(attribute)
+            switch (attribute.AttributeClassReference) {
+              case '_DEPARTMENT_ID': correctType.id = attribute.Value
+                break;
+              case 'iCOV_node_id': correctType.node_id = attribute.Value
+                break;
+              case '_COUNTRY': correctType.country = attribute.Value
+                break;
+              case '_CITY': correctType.city = attribute.Value
+                break;
+              case '_STREET_ADDRESS': correctType.street_address = attribute.Value
+                break;
+              case '_POSTAL_CODE': correctType.postal_code = attribute.Value
+                break;
+              case '_TO_DATE': correctType.to_date = attribute.Value
+                break;
+              case '_FROM_DATE': correctType.from_date = attribute.Value
+                break;
+
+            }
+          })
+
+          acc.addresses.push(correctType);
+          correctType = null;
+        }
+      }
     })
 
-    if(newPerson.id) {
-      console.log('newperson before push', newPerson);
-      acc.people.push(newPerson)
-    }
-    if(newDepartment.id) {
-      acc.departments.push(newDepartment)
-    }
-    if(newAddress.node_id) {
-      acc.addresses.push(newAddress)
-    }
+    // if(newPerson.id) {
+    //   console.log('newperson before push', newPerson);
+    //   acc.people.push(newPerson)
+    // }
+    // if(newDepartment.id) {
+    //   acc.departments.push(newDepartment)
+    // }
+    // if(newAddress.node_id) {
+    //   acc.addresses.push(newAddress)
+    // }
 
     console.log('acc', acc);
     return acc;
