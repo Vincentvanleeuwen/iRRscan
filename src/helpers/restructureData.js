@@ -1,37 +1,42 @@
-// let newData = {
-//   people: [],
-//   companies: [],
-//   addresses: []
-// }
-
 export const restructureData = arr => {
 
-  let newPerson = {};
-  let newDepartment = {};
-  let newAddress = {};
+  console.log(arr)
 
   return arr.reduce((acc, cur) => {
+
+    let newPerson = null;
+    let newDepartment = null;
+    let newAddress = null;
     //Check if location matches another entries' location, return the index
     const itemIndex = acc.findIndex(item => console.log(item.people));
-    console.log(itemIndex);
-    console.log(acc)
     // Check if index exists
-    if(itemIndex > -1) {
+    if(itemIndex === -1) {
 
       // Add capacity/chargingpointcapacity to this object
-      acc['people'] = {};
-      acc['departments'] = {};
-      acc['addresses'] = {};
+      acc['people'] = [];
+      acc['departments'] = [];
+      acc['addresses'] = [];
 
-      console.log(acc)
     }
+    console.log('cur00', cur[0][0])
     cur[0][0].forEach(entry => {
+      let collection = entry.AttributeCollection;
 
-      entry.AttributeCollection.forEach(attribute => {
+      // Change structure of object when theres only one or no item.
+      if(!collection.length || collection.length === 1) {
+        collection = []
+        collection.push(entry.AttributeCollection.Attribute)
+      }
+
+      collection.forEach(attribute => {
+        console.log(attribute)
+
+        let correctType;
 
         if(attribute.AttributeClassReference === "iCOV_node_type"){
           if (attribute.Value === "PEOPLE") {
-            newPerson = {
+            console.log('Created new Person')
+            correctType = {
               id: null, // = [anb.xml] _ID
               node_id: null, // = [anb.xml] iCOV_node_id
               name: null, // = [anb.xml] _LABEL
@@ -43,8 +48,10 @@ export const restructureData = arr => {
               department_node_id: null, // = [anb.xml] iCOV_node_id
               relations: []
             };
+
           } else if (attribute.Value === "DEPARTMENT") {
-            newDepartment = {
+            console.log('Created new Department')
+            correctType = {
               id: null, // = [anb.xml] _DEPARTMENT_ID
               node_id: null, // = [anb.xml] iCOV_node_id
               name: null, // = [anb.xml] _DEPARTMENT_NAME
@@ -52,7 +59,8 @@ export const restructureData = arr => {
               relations: []
             };
           } else if (attribute.Value === "ADDRESS") {
-            newAddress = {
+            console.log('Created new Address')
+            correctType = {
               node_id: null, // = [anb.xml] iCOV_node_id
               country: null, // = [anb.xml] _COUNTRY
               city: null, // = [anb.xml] _CITY
@@ -63,58 +71,42 @@ export const restructureData = arr => {
               relations: []
             };
 
+          } else {
+            return
           }
         }
 
-        if(attribute.AttributeClassReference === "_ID") {
-
-          newPerson.id = +attribute.Value
-          return newPerson;
+        // check for unique property position from a person to check if its a person.
+        if (correctType.position) {
+          console.log('yay new person', attribute);
         }
+        // if (newDepartment !== {}) {
+        //
+        // }
+        // if (newAddress !== {}) {
+        //
+        // }
+        // if(attribute.AttributeClassReference === "_ID") {
+        //   newPerson.id = +attribute.Value
+        //   return newPerson;
+        // }
 
       })
 
-
     })
 
-    // let location = cur[3][1];
-    // let capacity = +cur[0][1];
-    // let chargingPoints = +cur[1][1];
-    //
-    // //
-    //
-    //   // Otherwise create a new entry
-
-
-
     if(newPerson.id) {
+      console.log('newperson before push', newPerson);
       acc.people.push(newPerson)
     }
     if(newDepartment.id) {
       acc.departments.push(newDepartment)
     }
-    if(newAddress.id) {
+    if(newAddress.node_id) {
       acc.addresses.push(newAddress)
     }
 
-    //
-    //   // Add capacity, chargingPointCapacity, and location to entry
-    //   newItem.location = location;
-    //   newItem.capacity += capacity;
-    //   newItem.chargingPointCapacity += chargingPoints;
-    //
-    //   // Set the type of the entry
-    //   if (!newItem.type) {
-    //     // Check if town or city
-    //     if (cities.includes(location)) {
-    //       newItem.type = 'city';
-    //     } else {
-    //       newItem.type = 'town';
-    //     }
-    //   }
-    //   acc.push(newItem);
-    // }
-    console.log(acc);
+    console.log('acc', acc);
     return acc;
   }, []);
 
