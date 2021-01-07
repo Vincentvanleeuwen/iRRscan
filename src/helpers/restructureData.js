@@ -1,5 +1,7 @@
+import { pushRelations } from "@/helpers/pushRelations";
+
 export const restructureData = arr => {
-  console.log(arr)
+
   return arr[0].reduce((acc, cur) => {
 
     //Check if location matches another entries' location, return the index
@@ -87,7 +89,7 @@ export const restructureData = arr => {
                 break;
               case '_DATE_OF_DEATH': correctType.date_of_death = attribute.Value
                 break;
-              case 'iCOV_node_id': correctType.node_id = attribute.Value
+              case 'iCOV_node_id': correctType.node_id = parseInt(attribute.Value)
                 break;
               case 'iCOV_node_subtype': correctType.position = attribute.Value
                 break;
@@ -157,21 +159,21 @@ export const restructureData = arr => {
         }
       }
     })
-    console.log(arr[1][0][0])
+
+    // Add relations to each type
     arr[1][0][0].forEach(relation => {
+
       let relationEdges = relation.EdgesInSet[0]
 
+      // If theres only one relationship, change the path
       if(!relationEdges) {
-
         relationEdges = relation.EdgesInSet.Edge;
-        // console.log(relationEdges)
       }
-      console.log(relationEdges.FromNodeSID, relationEdges.ToNodeSID, relationEdges.EdgeCategory )
-      acc.forEach(item => {
-        console.log('???', item);
 
-      })
-      // console.log(thisItem)
+      pushRelations(acc.people, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
+      pushRelations(acc.departments, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
+      pushRelations(acc.addresses, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
+
     });
 
     return acc;
