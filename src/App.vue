@@ -86,7 +86,7 @@ export default {
   color: #2c3e50;
   display: grid;
   grid-template-columns: 2fr 6fr;
-  grid-template-rows: 1fr 10fr;
+  grid-template-rows: .5fr 10fr;
 }
 
 #nav {

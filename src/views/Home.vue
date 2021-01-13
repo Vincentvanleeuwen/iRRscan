@@ -32,6 +32,7 @@ export default {
       type: Boolean
     }
   },
+  emits: ["bsnError"],
   components: {
     InputText,
     Button
