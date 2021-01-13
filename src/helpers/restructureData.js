@@ -75,13 +75,15 @@ export const restructureData = arr => {
 
       })
 
-      // check for unique property position from a person to check if its a person.
+      // Check if there is an address, person or company
       if (correctType) {
 
+        // check for unique property position from a person to check if its a person.
         if (correctType.position === null) {
 
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
+            // Assign the values to the object. Turn string numbers into real numbers.
             switch (attribute.AttributeClassReference) {
               case '_ID': correctType.id = parseInt(attribute.Value)
                 break;
@@ -102,7 +104,9 @@ export const restructureData = arr => {
             }
           })
 
+          // Add new person to people array
           acc.people.push(correctType);
+          // Clear the type so a new entry can use it.
           correctType = null;
         }
         // check for unique property managerID from a department to check if its a department.
@@ -110,6 +114,7 @@ export const restructureData = arr => {
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
 
+            // Assign the values to the object. Turn string numbers into real numbers.
             switch (attribute.AttributeClassReference) {
               case '_DEPARTMENT_ID': correctType.id = parseInt(attribute.Value)
                 break;
@@ -125,14 +130,17 @@ export const restructureData = arr => {
             }
           })
 
+          // Add the department to the departments array.
           acc.departments.push(correctType);
+
+          // Clear the type so a new entry can use it.
           correctType = null;
         }
         // check for unique property city from a address to check if its a address.
         else if (correctType.city === null) {
           let collection = entry.AttributeCollection;
           collection.forEach(attribute => {
-
+            // Assign the values to the object. Turn string numbers into real numbers.
             switch (attribute.AttributeClassReference) {
               case '_DEPARTMENT_ID': correctType.id = parseInt(attribute.Value)
                 break;
@@ -150,11 +158,13 @@ export const restructureData = arr => {
                 break;
               case '_FROM_DATE': correctType.from_date = attribute.Value
                 break;
-
             }
           })
 
+          // Add the address to the addresses array.
           acc.addresses.push(correctType);
+
+          // Clear the type so a new entry can use it.
           correctType = null;
         }
       }
@@ -170,9 +180,9 @@ export const restructureData = arr => {
         relationEdges = relation.EdgesInSet.Edge;
       }
 
-      pushRelations(acc.people, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
-      pushRelations(acc.departments, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
-      pushRelations(acc.addresses, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID));
+      pushRelations(acc.people, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID), relationEdges.EdgeCategory);
+      pushRelations(acc.departments, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID), relationEdges.EdgeCategory);
+      pushRelations(acc.addresses, parseInt(relationEdges.FromNodeSID), parseInt(relationEdges.ToNodeSID), relationEdges.EdgeCategory);
 
     });
 
