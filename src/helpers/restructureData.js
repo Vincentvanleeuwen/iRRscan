@@ -44,6 +44,7 @@ export const restructureData = arr => {
               date_of_death: null, // = [anb.xml] _DATE_OF_DEATH, if null = not dead.
               position: null, // = [anb.xml] iCOV_node_subtype
               department_id: null, // = [anb.xml] _DEPARTMENT_ID
+              school_history: [],
               relations: []
             };
 

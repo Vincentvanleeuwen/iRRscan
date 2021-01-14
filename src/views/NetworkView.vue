@@ -1,5 +1,5 @@
 <template>
-  <Nav/>
+  <Nav class="navigation"/>
   <FilterMenu :types="relationTypes"
               :age="ageRange"
               :function="companyFunction"
@@ -8,16 +8,19 @@
               :departments="getData.departments"/>
 
   <section class="network">
-  <Person :selected="selected"
-          v-on:get-company="getCompany"
-          v-on:get-age="getAge"/>
+    <Person v-on:get-company="getCompany"
+            v-on:get-age="getAge"
+            :selected="selected"
+            :xDomain="xDomain"/>
+
   </section>
   <section class="relations p-d-flex p-flex-column">
     <Person v-for="relation in relatedPeople"
+            v-bind:key="relation.id"
             v-on:get-company="getCompany"
             v-on:get-age="getAge"
-            v-bind:key="relation.id"
-            :selected="relation"/>
+            :selected="relation"
+            :xDomain="xDomain"/>
   </section>
 
 
@@ -52,6 +55,7 @@ export default {
       relatedPeople: this.related,
       relationTypes: ["Familie", "Werk", "School"],
       ageRange: [1950, 2021],
+      xDomain: [],
       companyFunction: ["Manager", "Senior Employee", "Junior Employee"],
       sexCheckbox: ["Man", "Vrouw"],
       selectedCompanies: null
@@ -59,14 +63,24 @@ export default {
   },
   mounted() {
     let dates = [];
+    let schoolStartDates = [];
+    let schoolEndDates = [];
 
     // Add all related people in a separate Array
     this.selected.relations.forEach(relation => {
       return this.addRelatedPeople(relation[1]);
     });
 
-    this.relatedPeople.forEach(person => dates.push(parseInt(person.date_of_birth.slice(0, 4))) )
+    this.relatedPeople.forEach(person => {
+      dates.push(parseInt(person.date_of_birth.slice(0, 4)))
+      person.school_history.forEach(school => {
+        schoolStartDates.push(school.startDate)
+        schoolEndDates.push(school.endDate)
+      })
+    })
+
     this.ageRange = [Math.min(...dates), Math.max(...dates)]
+    this.xDomain = [Math.min(...schoolStartDates) -5, Math.max(...schoolEndDates) +5]
   },
   methods: {
     getCompany(id) {
@@ -78,13 +92,13 @@ export default {
       return company.name;
     },
     // https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
-    getAge(birthdate) {
+    getAge(birthDate) {
 
       var today = new Date();
-      var birthDate = new Date(birthdate);
-      var age = today.getFullYear() - birthDate.getFullYear();
-      var m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      var dateOfBirth = new Date(birthDate);
+      var age = today.getFullYear() - dateOfBirth.getFullYear();
+      var m = today.getMonth() - dateOfBirth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
         age--;
       }
       return age;
@@ -103,15 +117,31 @@ export default {
   .network {
     grid-column-start: 2;
     grid-row-start: 2;
+    background-color: white;
+    position: fixed;
+    top: 190px;
+    left:300px;
   }
-  .network .card {
-    border: rgb(208, 116, 36) solid 5px;
+  .network .person {
+    border: rgb(208, 116, 36) solid 2px;
+
+  }
+  .navigation {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    height: 200px;
+    width: 100%;
+
   }
   .relations {
     grid-column-start: 2;
     grid-row-start: 3;
     justify-content: flex-start;
     align-items: flex-start;
+    margin-top: 2em;
   }
   .filter-menu {
     padding-left: 2em;
@@ -120,6 +150,13 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: fixed;
+
+    height: 100%;
+    margin-bottom: 5em;
+    top:200px;
+    bottom:0;
+    left: 0;
   }
   .function, .sex, .relation-types, .companies {
     display: flex;

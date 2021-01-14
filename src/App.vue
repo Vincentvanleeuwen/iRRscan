@@ -17,6 +17,7 @@ import { convertToJSON } from "@/utils/convertToJSON";
 import { filterColumns } from "@/helpers/filterColumns";
 import { restructureData } from "@/helpers/restructureData";
 import router from './router/index'
+import { addSchoolHistory } from "@/helpers/addSchoolHistory";
 const endPoints = [
   // "./data/nodes.json",
   "./data/anb.json",
@@ -36,6 +37,7 @@ export default {
       .then(convertToJSON)
       .then(filterColumns)
       .then(restructureData)
+      .then(addSchoolHistory)
       .then(result => {
         dataState.value = result
         console.log(result)
@@ -53,7 +55,6 @@ export default {
   },
   methods: {
     getPerson(bsn) {
-      console.log(bsn);
       this.selected = this.dataState.people.find(person => person.node_id === parseInt(bsn));
       this.bsnError = !this.selected;
 
