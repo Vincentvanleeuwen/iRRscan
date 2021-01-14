@@ -35,7 +35,7 @@ export default {
       .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
     // Add X axis
-    console.log(this.selectedUser.name, this.xDomain);
+    // console.log(this.selectedUser.name, this.xDomain);
     var x = scaleLinear()
       .domain(this.domainX)
       .range([ 0, width]);

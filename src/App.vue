@@ -104,9 +104,26 @@ export default {
   color: #42b983;
 }
 .p-card-title {
-  font-size: 1rem!important;
+  font-size: .75rem!important;
 }
 .p-card .p-card-body {
   padding: 0!important;
+}
+.p-card-header {
+  display: flex;
+  align-items: center;
+  padding-left: .5em;
+}
+.p-card-subtitle {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: .5rem;
+  font-size: .5rem!important;
+}
+.p-card-title {
+  display: flex;
+  justify-content: flex-start;
+  padding-left: .5rem;
+  margin-bottom: 0.25rem!important;
 }
 </style>

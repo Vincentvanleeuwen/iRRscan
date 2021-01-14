@@ -19,6 +19,7 @@
             v-bind:key="relation.id"
             v-on:get-company="getCompany"
             v-on:get-age="getAge"
+            v-on:get-relations="getRelationsToSelected"
             :selected="relation"
             :xDomain="xDomain"/>
   </section>
@@ -109,6 +110,28 @@ export default {
         this.relatedPeople.push(newRelation)
       }
       newRelation = null;
+    },
+    getRelationsToSelected(id) {
+      console.log(this.selected, id)
+      let relationTypes = [];
+      this.selected.relations.forEach(relation => {
+        console.log(relation[1])
+        if(relation[1] === id){
+          console.log(relation[2])
+          if(relation[2] === "EMPLOYEE2MANAGER"
+              || "MANAGER2EMPLOYEE"
+              || "REL1") {
+            relationTypes.push("work")
+          } else if (relation[2] === "REL2") {
+            relationTypes.push("school")
+          } else if(relation[2] === "REL4") {
+            relationTypes.push("family")
+          }
+
+        }
+      })
+      console.log(relationTypes)
+      return relationTypes;
     }
   }
 };
