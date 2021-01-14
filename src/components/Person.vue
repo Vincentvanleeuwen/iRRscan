@@ -1,106 +1,60 @@
 <template>
-    <div class="card">
-      <div class="card-content">
+<!--    <div class="card">-->
+<!--      <div class="card-content">-->
+<!--        <div class="gender">-->
+<!--          <div class="extra-width">-->
+<!--            <img :src="require(`@/assets/img/${selected.sex}.png`)" :alt="selected.sex">-->
+<!--          </div>-->
+<!--        </div>-->
 
-        {{parseInt(selected.department_id)}}
-        <p class="thin">{{$emit('get-company', selected.department_id)}}</p>
-        <p class="name">{{selected.name}}<span class="age"> ({{$emit('get-age', selected.date_of_birth)}})</span></p>
-        <p class="thin">{{selected.position}}</p>
-        <p class="smoll"> BSN: {{selected.node_id}}</p>
-        <div class="circle"></div>
-      </div>
-      <div class="gender">
-        <div class="extra-width">
+<!--        <p class="thin">{{$emit('get-company', selected.department_id)}}</p>-->
+<!--        <p class="name">{{selected.name}}<span class="age"> ({{$emit('get-age', selected.date_of_birth)}})</span></p>-->
+<!--        <p class="thin">{{selected.position}}</p>-->
+<!--        <p class="small-thick-font"> BSN: {{selected.node_id}}</p>-->
+
+<!--      </div>-->
+
+<!--    </div>-->
+    <div class="person">
+      <Card class="card">
+        <template #header>
           <img :src="require(`@/assets/img/${selected.sex}.png`)" :alt="selected.sex">
-        </div>
-      </div>
+        </template>
+        <template #title class="name">
+          {{selected.name}} ({{$emit('get-age', selected.date_of_birth)}})
+        </template>
+      </Card>
+      <ClevelandPlot />
     </div>
+
 </template>
 
 <script>
+import Card from 'primevue/card';
+import ClevelandPlot from "@/components/ClevelandPlot";
 export default {
   name: "Person",
   props: ["selected"],
-  emits: ["get-company", "get-age"]
-  // data: function() {
-  //   return {
-  //     connectBoxes: this.vModel
-  //   }
-  // }
+  emits: ["get-company", "get-age"],
+  components: {
+    Card,
+    ClevelandPlot
+  }
 }
 </script>
 
 <style scoped>
 .card {
-  background-color: #1F1F1E;
-  width: 22em;
-  height: 10em;
-  border-radius: 1em;
-  margin:1em auto;
-  display: flex;
-  align-items: center;
-  color: #1F1F1E;
-  position: relative;
-  overflow: hidden;
+  width: 15em;
+  margin: .5em 0;
 }
-.card-content {
+.person {
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
 }
-.card-content p {
-  text-align: left;
-  padding-left: 1em;
-  margin:.2em;
-  z-index: 2;
-
+/* Change card style of primevue card*/
+.p-card-header img {
+  max-width: 100px;
 }
 
-.gender {
-  background-color: #1F1F1E;
-  height:100%;
-  width: 10em;
-  margin-left: 2em;
-  border-bottom-right-radius: 8%;
-  border-top-right-radius: 8%;
-  display:flex;
-  align-items: center;
-  justify-content: center;
-}
-.gender img {
-  width: 4em;
-  margin-top: .3em;
-}
-
-.circle {
-  border-radius:50%;
-  width:25em;
-  height:25em;
-  position: absolute;
-  left: -12em;
-  top:-8em;
-  background-color: #E4E4E4;
-  z-index: 1;
-}
-.extra-width {
-  width: 5em;
-  height: 5em;
-  border-radius:50%;
-  background-color: #E4E4E4;
-}
-.thin {
-  font-family: AvenirNext-UltraLight, sans-serif;
-  font-size: .7em;
-  margin-left: 0.7em!important;
-
-}
-.smoll {
-  font-size: .7em;
-  margin-left: 0.7em!important;
-  margin-top: 1em!important;
-  font-family: AvenirNext-Bold, sans-serif;
-}
-.age {
-  font-family: AvenirNext-UltraLight, sans-serif;
-  font-size: .8em;
-}
 </style>

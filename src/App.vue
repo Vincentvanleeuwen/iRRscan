@@ -85,8 +85,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   display: grid;
-  grid-template-columns: 2fr 6fr;
-  grid-template-rows: .5fr 10fr;
+  grid-template-columns: 300px auto;
+  grid-template-rows: 200px 200px auto;
+  height: 100vh;
 }
 
 #nav {
@@ -100,5 +101,11 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+.p-card-title {
+  font-size: 1rem!important;
+}
+.p-card .p-card-body {
+  padding: 0!important;
 }
 </style>
