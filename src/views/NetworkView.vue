@@ -119,8 +119,8 @@ export default {
         if(relation[1] === id){
           console.log(relation[2])
           if(relation[2] === "EMPLOYEE2MANAGER"
-              || "MANAGER2EMPLOYEE"
-              || "REL1") {
+              || relation[2] === "MANAGER2EMPLOYEE"
+              || relation[2] === "REL1") {
             relationTypes.push("work")
           } else if (relation[2] === "REL2") {
             relationTypes.push("school")

@@ -108,6 +108,9 @@ export default {
 }
 .p-card .p-card-body {
   padding: 0!important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .p-card-header {
   display: flex;

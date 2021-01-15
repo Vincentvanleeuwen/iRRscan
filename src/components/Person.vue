@@ -11,6 +11,7 @@
           {{getPosition(selected.position)}}
         </template>
         <template #content>
+          {{relationsToSelected}}
           <div class="relation-color"
                v-for="relationType in relationsToSelected"
                v-bind:key="relationType.id">
@@ -24,7 +25,7 @@
 <script>
 import Card from 'primevue/card';
 import ClevelandPlot from "@/components/ClevelandPlot";
-// import {onMounted} from "@vue/runtime-core";
+import {onMounted} from "@vue/runtime-core";
 import { ref } from "vue";
 
 export default {
@@ -35,18 +36,19 @@ export default {
     Card,
     ClevelandPlot
   },
-  setup() {
+  setup(props, { emit }) {
     let relationsToSelected = ref([]);
-
-    // onMounted(() => {
-    //   // console.log(this.selected,this.xDomain)
-    //   relationsToSelected.value = this.$emit("get-relations", this.selected.node_id);
-    // });
-    return relationsToSelected
+    
+    onMounted(() => {
+      // console.log(this.selected,this.xDomain)
+      relationsToSelected.value = emit("get-relations", props.selected.node_id);
+      console.log('relationsToSelected', relationsToSelected);
+    });
+    return { relationsToSelected }
   },
- mounted() {
-   this.$emit("get-relations", this.selected.node_id)
- },
+ // mounted() {
+ //   this.relationsToSelected = this.$emit("get-relations", this.selected.node_id)
+ // },
   methods: {
     getPosition(position) {
       switch(position) {
