@@ -129,4 +129,26 @@ export default {
   padding-left: .5rem;
   margin-bottom: 0.25rem!important;
 }
+.domain:first-of-type {
+  color: white;
+}
+.y-axis {
+  color: white;
+}
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: max-content;
+  height: 1.5em;
+  padding: 0 1em;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0;
+  border-radius: 2px;
+  color:white;
+  font-weight: bold;
+  padding-top:.5em;
+  pointer-events: none;
+  opacity: 0;
+}
 </style>

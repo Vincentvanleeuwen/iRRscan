@@ -2,7 +2,7 @@
 
   <div :id="selected.name.replace(/\s/g, '').toLowerCase()">
   </div>
-
+  <div :id="selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip'" class="tooltip"></div>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ import {
 } from 'd3'
 let margin = {top: 10, right: 30, bottom: 30, left: 30},
     width = 500 - margin.left - margin.right,
-    height = 200 - margin.top - margin.bottom;
+    height = 140 - margin.top - margin.bottom;
 export default {
   name: "ClevelandPlot",
   props: ['selected', 'xDomain'],
@@ -51,12 +51,15 @@ export default {
       .padding(1);
 
     svg.append("g")
+    .attr('class', 'y-axis')
     .call(axisLeft(y))
 
     const lolly = svg.selectAll(".lolly")
       .data(this.selectedUser.school_history)
         .enter().append('g')
           .attr('class', 'lolly');
+    // Add tooltip
+
 
     lolly.selectAll('.stick')
         .data(d => [d])
@@ -78,6 +81,22 @@ export default {
         .attr("cy", y(this.selectedUser.name))
         .attr("r", "6")
         .style("fill", "#69b3a2")
+        .on("mouseover", (event, d) => {
+
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip')
+            .transition().duration(200).style('opacity', .9);
+
+          console.log('d=', event.pageX, event.pageY);
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip')
+            .html(`${d.school}`)
+            .style('left', `${event.pageX}px`)
+            .style('top', `${event.pageY - 28}px`);
+        })
+        .on('mouseout', () => {
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip').transition().duration(500).style('opacity', 0);
+
+        });
+
 
     lolly.selectAll("circleTwo")
       .data(d => [d])

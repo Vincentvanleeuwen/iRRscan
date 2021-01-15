@@ -112,12 +112,10 @@ export default {
       newRelation = null;
     },
     getRelationsToSelected(id) {
-      console.log(this.selected, id)
+      // console.log(this.selected, id)
       let relationTypes = [];
       this.selected.relations.forEach(relation => {
-        console.log(relation[1])
         if(relation[1] === id){
-          console.log(relation[2])
           if(relation[2] === "EMPLOYEE2MANAGER"
               || relation[2] === "MANAGER2EMPLOYEE"
               || relation[2] === "REL1") {

@@ -38,11 +38,11 @@ export default {
   },
   setup(props, { emit }) {
     let relationsToSelected = ref([]);
-    
+
     onMounted(() => {
       // console.log(this.selected,this.xDomain)
       relationsToSelected.value = emit("get-relations", props.selected.node_id);
-      console.log('relationsToSelected', relationsToSelected);
+      console.log('relationsToSelected', relationsToSelected.value);
     });
     return { relationsToSelected }
   },
