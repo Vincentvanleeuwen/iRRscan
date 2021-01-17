@@ -71,9 +71,9 @@ export default {
 <style scoped>
 .card {
   display: flex;
-  min-width: 11em;
-  max-height: 6em;
-  margin: .5em;
+  width: 11em;
+  height: 5em;
+  margin: .5em 5em .5em .5em;
 }
 .relation-color {
   background-color: #7BC4AF;
@@ -83,6 +83,7 @@ export default {
 .person {
   display:flex;
   flex-direction: row;
+  padding: 1em;
 }
 /* Change card style of primevue card*/
 .p-card-header img {

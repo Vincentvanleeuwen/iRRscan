@@ -3,6 +3,7 @@
   <div :id="selected.name.replace(/\s/g, '').toLowerCase()">
   </div>
   <div :id="selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip'" class="tooltip"></div>
+  <div :id="selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line'" class="vertical-line"></div>
 </template>
 
 <script>
@@ -70,8 +71,8 @@ export default {
           .attr("x2", function(d) { return x(d.endDate); })
           .attr("y1",  y(this.selectedUser.name))
           .attr("y2", y(this.selectedUser.name))
-          .attr("stroke", "grey")
-          .attr("stroke-width", "1px")
+          .attr("stroke", "#1FB52C")
+          .attr("stroke-width", "5px")
 
     lolly.selectAll("circleOne")
       .data(d => [d])
@@ -80,17 +81,16 @@ export default {
         .attr("cx", function(d) { return x(d.startDate); })
         .attr("cy", y(this.selectedUser.name))
         .attr("r", "6")
-        .style("fill", "#69b3a2")
+        .style("fill", "#1FB52C")
         .on("mouseover", (event, d) => {
 
           select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip')
             .transition().duration(200).style('opacity', .9);
 
-          console.log('d=', event.pageX, event.pageY);
           select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip')
             .html(`${d.school}`)
-            .style('left', `${event.pageX}px`)
-            .style('top', `${event.pageY - 28}px`);
+            .style('left', `${event.pageX - 80}px`)
+            .style('top', `${event.pageY - 40}px`);
         })
         .on('mouseout', () => {
           select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'tooltip').transition().duration(500).style('opacity', 0);
@@ -105,7 +105,30 @@ export default {
         .attr("cx", function(d) { return x(d.endDate); })
         .attr("cy", y(this.selectedUser.name))
         .attr("r", "6")
-        .style("fill", "#69b3a2")
+        .style("fill", "#1FB52C")
+
+    lolly.selectAll("circleThree")
+    .data(d => [d])
+    .enter()
+    .append("circle")
+    .attr("cx", function(d) { return x(d.startDate + 1); })
+    .attr("cy", y(this.selectedUser.name))
+    .attr("r", "6")
+    .style("fill", "#3CDBC4")
+    .on("mouseover", (event) => {
+
+      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
+      .transition().duration(200).style('opacity', .9);
+
+      console.log('d=', event.pageX, event.pageY);
+      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
+      .style('left', `${event.pageX }px`)
+      .style('top', `${event.pageY }px`);
+    })
+    .on('mouseout', () => {
+      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line').transition().duration(500).style('opacity', 0);
+
+    });
   }
 }
 </script>

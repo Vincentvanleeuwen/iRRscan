@@ -1,5 +1,5 @@
 <template>
-  <Nav class="navigation"/>
+  <Nav class="navigation" :networkHome="networkHome" :networkItems="networkItems"/>
   <FilterMenu :types="relationTypes"
               :age="ageRange"
               :function="companyFunction"
@@ -15,7 +15,7 @@
 
   </section>
   <section class="relations p-d-flex p-flex-column">
-    <Person v-for="relation in relatedPeople"
+    <Person v-for="relation in filterPeople(relatedPeople)"
             v-bind:key="relation.id"
             v-on:get-company="getCompany"
             v-on:get-age="getAge"
@@ -43,6 +43,12 @@ export default {
     },
     related: {
       type: Array
+    },
+    home: {
+      type: Object
+    },
+    items: {
+      type: Array
     }
   },
   emits: ["get-person", "add-related"],
@@ -57,16 +63,17 @@ export default {
       relationTypes: ["Familie", "Werk", "School"],
       ageRange: [1950, 2021],
       xDomain: [],
-      companyFunction: ["Manager", "Senior Employee", "Junior Employee"],
+      companyFunction: ["Senior Employee", "Junior Employee", "Manager"],
       sexCheckbox: ["Man", "Vrouw"],
-      selectedCompanies: null
+      selectedCompanies: null,
+      networkHome: this.home,
+      networkItems: this.items
     }
   },
   mounted() {
     let dates = [];
     let schoolStartDates = [];
     let schoolEndDates = [];
-
     // Add all related people in a separate Array
     this.selected.relations.forEach(relation => {
       return this.addRelatedPeople(relation[1]);
@@ -79,7 +86,6 @@ export default {
         schoolEndDates.push(school.endDate)
       })
     })
-
     this.ageRange = [Math.min(...dates), Math.max(...dates)]
     this.xDomain = [Math.min(...schoolStartDates) -5, Math.max(...schoolEndDates) +5]
   },
@@ -103,6 +109,14 @@ export default {
         age--;
       }
       return age;
+    },
+    filterPeople(relatedPeople) {
+      console.log('RelatedPeople', relatedPeople);
+      return relatedPeople.filter(person => {
+        console.log(parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]);
+        return parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]
+            || parseInt(person.date_of_birth.slice(0, 4)) < this.ageRange[1]
+      })
     },
     addRelatedPeople(bsn) {
       let newRelation = this.getData.people.find(person => person.node_id === parseInt(bsn));
@@ -136,16 +150,17 @@ export default {
 </script>
 <style scoped>
   .network {
-    grid-column-start: 2;
-    grid-row-start: 2;
     background-color: white;
     position: fixed;
-    top: 190px;
-    left:300px;
+    top: 200px;
+    left: 410px;
+    width: 100%;
   }
   .network .person {
-    border: rgb(208, 116, 36) solid 2px;
-
+    background-color: rgb(247 247 247);;
+    padding: 0 1em;
+    display: flex;
+    align-items: center;
   }
   .navigation {
     grid-column-start: 2;
@@ -159,15 +174,13 @@ export default {
   }
   .relations {
     grid-column-start: 2;
-    grid-row-start: 3;
+    grid-row-start: 4;
     justify-content: flex-start;
     align-items: flex-start;
     margin-top: 2em;
   }
   .filter-menu {
-    padding-left: 2em;
-    grid-column-start: 1;
-    grid-row-start: 2;
+    padding-left: 6em;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

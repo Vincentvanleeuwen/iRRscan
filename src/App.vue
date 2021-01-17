@@ -5,7 +5,9 @@
                v-on:add-related="addRelatedPeople"
                :bsnError="bsnError"
                :selected="selected"
-               :related="relatedPeople"/>
+               :related="relatedPeople"
+               :home="home"
+               :items="items"/>
 </template>
 
 <script>
@@ -53,6 +55,16 @@ export default {
       relatedPeople
     }
   },
+  data() {
+    return {
+      home: {label: "BSN zoeken", to: '/'},
+      items: [
+        {label: 'Steven King'},
+        {label: 'Jeanette King'},
+        {label: 'Neena Kochhhar'}
+      ]
+    }
+  },
   methods: {
     getPerson(bsn) {
       this.selected = this.dataState.people.find(person => person.node_id === parseInt(bsn));
@@ -86,8 +98,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   display: grid;
-  grid-template-columns: 300px auto;
-  grid-template-rows: 200px 200px auto;
+  grid-template-columns: 400px auto;
+  grid-template-rows: 50px 100px 200px auto;
   height: 100vh;
 }
 
@@ -135,14 +147,20 @@ export default {
 .y-axis {
   color: white;
 }
+.network .domain:first-of-type {
+  color: rgb(247 247 247);
+}
+.network .y-axis {
+  color: rgb(247 247 247);
+}
 .tooltip {
   position: absolute;
   text-align: center;
   width: max-content;
-  height: 1.5em;
-  padding: 0 1em;
+  height: 2.5em;
+  padding: 1em 1em;
   font: 12px sans-serif;
-  background: lightsteelblue;
+  background: #299EFD;
   border: 0;
   border-radius: 2px;
   color:white;
@@ -150,5 +168,51 @@ export default {
   padding-top:.5em;
   pointer-events: none;
   opacity: 0;
+}
+.vertical-line {
+  position: absolute;
+  text-align: center;
+  width: 5px;
+  height: 60em;
+  z-index: 1;
+  background: #3CDBC4;
+  border: 0;
+  color:white;
+  pointer-events: none;
+  opacity: 0;
+}
+.p-breadcrumb ul li.p-breadcrumb-chevron {
+  transform: scale(0.5);
+}
+li .p-menuitem-text {
+  font-size: .7em;
+  line-height: 50px!important;
+}
+.p-breadcrumb {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+}
+.p-multiselect {
+  width: 15em;
+  height: max-content;
+}
+/* Slider Specifications */
+.p-slider .p-slider-handle {
+  height: 0.743rem;
+  width: 0.743rem;
+  background: #ffffff;
+  border: 1px solid #909090;
+}
+.p-slider.p-slider-horizontal .p-slider-handle {
+  margin-top: -0.3415rem;
+  margin-left: -0.3415rem;
+}
+.p-slider .p-slider-range {
+  background: #909090;
+}
+.p-slider.p-slider-horizontal {
+  height: 0.186rem;
 }
 </style>

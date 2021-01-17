@@ -7,10 +7,13 @@
 
     <section class="date-of-birth">
       <h4>Geboortejaar | {{ageRange[0]}} - {{ageRange[1]}}</h4>
-      <Slider v-model="ageRange" :range="true" :min="1900" :max="2021"/>
+      <Slider v-model.sync="ageRange"
+              :range="true"
+              :min="ageRange[0] - 5"
+              :max="ageRange[1] + 5"/>
     </section>
     <MultiCheckbox :name="'Functie'"
-                   :boxes="['Manager', 'Senior Employee', 'Junior Employee']"
+                   :boxes="[ 'Senior Employee', 'Manager', 'Junior Employee' ]"
                    :vModel="companyFunction"></MultiCheckbox>
 
     <MultiCheckbox :name="'Geslacht'"
@@ -42,6 +45,24 @@
         </template>
       </MultiSelect>
     </section>
+
+    <section class="legenda">
+      <h4> Legenda </h4>
+      <div class="legend-container">
+        <div class="legend-option">
+          <div class="box"></div>
+          Werk
+        </div>
+        <div class="legend-option">
+          <div class="box"></div>
+          Familie
+        </div>
+        <div class="legend-option">
+          <div class="box"></div>
+          School
+        </div>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -67,10 +88,30 @@ export default {
       selectedCompanies: this.selected,
       companies: this.departments
     }
+  },
+  updated() {
+    console.log(this.ageRange)
+  },
+  watch:{
+    age: function(newVal, oldVal){
+      console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+
+    }
   }
 }
 </script>
 
 <style scoped>
-
+  h4 {
+    text-align: left;
+  }
+  .legend-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .legend-option {
+    width: 50%;
+    height: 2em;
+  }
 </style>
