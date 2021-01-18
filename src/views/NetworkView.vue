@@ -113,9 +113,10 @@ export default {
     filterPeople(relatedPeople) {
       console.log('RelatedPeople', relatedPeople);
       return relatedPeople.filter(person => {
+
         console.log(parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]);
         return parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]
-            || parseInt(person.date_of_birth.slice(0, 4)) < this.ageRange[1]
+            && parseInt(person.date_of_birth.slice(0, 4)) < this.ageRange[1]
       })
     },
     addRelatedPeople(bsn) {
