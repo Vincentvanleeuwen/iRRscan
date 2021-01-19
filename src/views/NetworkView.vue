@@ -13,6 +13,12 @@
               :departments="getData.departments"/>
 
   <section class="network">
+    <div class="results" v-if="filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length < 1">
+      Geen resultaten.
+    </div>
+    <div class="results" v-else>
+      {{ filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length}} gevonden resultaten.
+    </div>
     <Person v-on:get-company="getCompany"
             v-on:get-age="getAge"
             :selected="selected"
@@ -20,12 +26,7 @@
 
   </section>
   <section class="relations p-d-flex p-flex-column">
-    <div class="results" v-if="filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length < 1">
-      Geen resultaten.
-    </div>
-    <div class="results" v-else>
-      {{ filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length}} gevonden resultaten.
-    </div>
+
     <Person v-for="relation in filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox)"
             v-bind:key="relation.id"
             v-on:get-company="getCompany"
@@ -288,5 +289,7 @@ export default {
   .results {
     font-weight: bold;
     font-size: .8em;
+    text-align: left;
+    margin-bottom: 1em;
   }
 </style>
