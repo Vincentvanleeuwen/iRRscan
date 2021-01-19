@@ -1,10 +1,10 @@
 <template>
   <section class="home">
-    <form class="searchbar" @submit.prevent="$emit('get-person', bsn)">
+    <form class="searchbar" @submit.prevent="$emit('getNewPerson', bsn)">
       <span class="p-input">
         <InputText type="text" v-model="bsn" placeholder="Zoek naar een BSN" />
       </span>
-      <Button icon="pi pi-search" class="p-button" @click="$emit('get-person', bsn)"/>
+      <Button icon="pi pi-search" class="p-button" @click="$emit('getNewPerson', bsn)"/>
     </form>
     <section class="error" v-if="bsnError">
       <p> Dit BSN is niet in ons systeem bekend.</p>
@@ -32,7 +32,7 @@ export default {
       type: Boolean
     }
   },
-  emits: ["bsnError"],
+  emits: ["bsnError", "getNewPerson"],
   components: {
     InputText,
     Button

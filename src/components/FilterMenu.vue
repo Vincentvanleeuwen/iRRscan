@@ -1,50 +1,75 @@
 <template>
   <section class="filter-menu">
 
-    <MultiCheckbox :name="'Relatie types'"
-                   :boxes="['Familie', 'Werk', 'School']"
-                   :vModel="relationTypes"></MultiCheckbox>
-
     <section class="date-of-birth">
       <h4>Geboortejaar | {{ageRange[0]}} - {{ageRange[1]}}</h4>
-      <Slider v-model.sync="ageRange"
+      <Slider v-model="ageRange"
               :range="true"
               :min="ageRange[0] - 5"
-              :max="ageRange[1] + 5"/>
+              :max="ageRange[1] + 5"
+              @change="$emit('get-age-range', ageRange)"/>
     </section>
-    <MultiCheckbox :name="'Functie'"
-                   :boxes="[ 'Senior Employee', 'Manager', 'Junior Employee' ]"
-                   :vModel="companyFunction"></MultiCheckbox>
+<!--    <MultiCheckbox :name="'Functie'"-->
+<!--                   :boxes="[ , 'Manager', 'Junior Employee' ]"-->
+<!--                   :vModel="companyFunction"-->
+<!--                   @change="$emit('get-company-function', companyFunction)"></MultiCheckbox>-->
 
-    <MultiCheckbox :name="'Geslacht'"
-                   :boxes="['Man', 'Vrouw']"
-                   :vModel="sexCheckbox"></MultiCheckbox>
-
-    <section class="companies">
-      <h4>Bedrijven</h4>
-      <MultiSelect v-model="selectedCompanies"
-                   :options="companies"
-                   optionLabel="name"
-                   placeholder="Selecteer een bedrijf"
-                   display="chip"
-                   :filter="true"
-
-                   class="multiselect-custom">
-        <template #value="slotProps">
-          <div class="country-item country-item-value" v-for="option of slotProps.value" :key="option.department_id">
-            <div>{{option.name}}</div>
-          </div>
-          <template v-if="!slotProps.value || slotProps.value.length === 0">
-            Selecteer een bedrijf
-          </template>
-        </template>
-        <template #option="slotProps">
-          <div class="country-item">
-            <div>{{slotProps.option.name}}</div>
-          </div>
-        </template>
-      </MultiSelect>
+    <section class="relation-types">
+      <h4> Functie </h4>
+      <div class="checkbox-container">
+        <div class="p-field-checkbox">
+          <Checkbox id="senior"
+                    name="functions"
+                    value="Senior Employee"
+                    v-model="companyFunction"
+                    @change="$emit('get-company-function', companyFunction)"/>
+          <label for="senior">Senior Employee</label>
+        </div>
+        <div class="p-field-checkbox">
+          <Checkbox id="manager"
+                    name="functions"
+                    value="Manager"
+                    v-model="companyFunction"
+                    @change="$emit('get-company-function', companyFunction)"/>
+          <label for="manager">Manager</label>
+        </div>
+        <div class="p-field-checkbox">
+          <Checkbox id="junior"
+                    name="functions"
+                    value="Junior Employee"
+                    v-model="companyFunction"
+                    @change="$emit('get-company-function', companyFunction)"/>
+          <label for="junior">Junior Employee</label>
+        </div>
+      </div>
     </section>
+
+    <section class="gender-container">
+      <h4> Geslacht </h4>
+      <div class="checkbox-container">
+        <div class="p-field-checkbox">
+          <Checkbox id="man"
+                    name="sex"
+                    value="Man"
+                    v-model="sexCheckbox"
+                    @change="$emit('get-sex', sexCheckbox)"/>
+          <label for="man">Man</label>
+        </div>
+        <div class="p-field-checkbox">
+          <Checkbox id="woman"
+                    name="sex"
+                    value="Vrouw"
+                    v-model="sexCheckbox"
+                    @change="$emit('get-sex', sexCheckbox)"/>
+          <label for="woman">Vrouw</label>
+        </div>
+      </div>
+    </section>
+<!--    <MultiCheckbox :name="'Geslacht'"-->
+<!--                   :boxes="['Man', 'Vrouw']"-->
+<!--                   :vModel="sexCheckbox"></MultiCheckbox>-->
+
+
 
     <section class="legenda">
       <h4> Legenda </h4>
@@ -68,30 +93,31 @@
 
 <script>
 import Slider from "primevue/slider";
-import MultiSelect from "primevue/multiselect";
-import MultiCheckbox from "@/components/MultiCheckbox";
-
+import Checkbox from 'primevue/checkbox';
 export default {
   name: "FilterMenu",
   components: {
     Slider,
-    MultiSelect,
-    MultiCheckbox
+    Checkbox
   },
-  props: ["types", "age", "function", "sex", "selected", "departments"],
+  props: ["types", "age", "functionInCompany", "sex", "selected", "departments"],
+  emits: ["get-age-range", "get-company-function", "get-sex"],
   data: function () {
     return {
       relationTypes: this.types,
       ageRange: this.age,
-      companyFunction: this.function,
+      companyFunction: this.functionInCompany,
       sexCheckbox: this.sex,
       selectedCompanies: this.selected,
-      companies: this.departments
+      companies: this.departments,
     }
   },
   updated() {
     console.log(this.ageRange)
+    console.log(this.companyFunction)
+
   },
+
   watch:{
     age: function(newVal, oldVal){
       console.log('Prop changed: ', newVal, ' | was: ', oldVal)
@@ -104,6 +130,11 @@ export default {
 <style scoped>
   h4 {
     text-align: left;
+    font-size: .8em;
+  }
+
+  .date-of-birth {
+    width: 80%;
   }
   .legend-container {
     display: flex;
@@ -113,5 +144,23 @@ export default {
   .legend-option {
     width: 50%;
     height: 2em;
+  }
+  .relation-types {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 350px;
+  }
+  .p-field-checkbox {
+    width: 50%;
+  }
+  .relation-types h4 {
+
+    margin-top: 2em;
   }
 </style>

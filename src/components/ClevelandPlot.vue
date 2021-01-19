@@ -16,7 +16,7 @@ import {
 } from 'd3'
 let margin = {top: 10, right: 30, bottom: 30, left: 30},
     width = 500 - margin.left - margin.right,
-    height = 140 - margin.top - margin.bottom;
+    height = 130 - margin.top - margin.bottom;
 export default {
   name: "ClevelandPlot",
   props: ['selected', 'xDomain'],
@@ -43,6 +43,7 @@ export default {
 
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
+      .attr("stroke-width","3")
       .call(axisBottom(x))
 
     // Y axis
@@ -73,6 +74,18 @@ export default {
           .attr("y2", y(this.selectedUser.name))
           .attr("stroke", "#1FB52C")
           .attr("stroke-width", "5px")
+
+   lolly.selectAll('.base-line')
+        .enter()
+        .append("line")
+          .attr('class', 'base-line')
+          .attr("x1", x(this.domainX[0]))
+          .attr("x2", x(this.domainX[1]))
+          .attr("y1",  y(this.selectedUser.name))
+          .attr("y2", y(this.selectedUser.name))
+          .attr("stroke", "#909090")
+          .attr("stroke-width", "1px")
+
 
     lolly.selectAll("circleOne")
       .data(d => [d])

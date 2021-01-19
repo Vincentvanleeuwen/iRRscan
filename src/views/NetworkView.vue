@@ -1,8 +1,13 @@
 <template>
-  <Nav class="navigation" :networkHome="networkHome" :networkItems="networkItems"/>
+  <Nav class="navigation" :networkHome="networkHome"
+       :networkItems="networkItems"
+       :get-person="getNewPerson"/>
   <FilterMenu :types="relationTypes"
               :age="ageRange"
-              :function="companyFunction"
+              v-on:get-age-range="getAgeRange"
+              :functionInCompany="companyFunction"
+              v-on:get-company-function="getCompanyFunction"
+              v-on:get-sex="getSex"
               :sex="sexCheckbox"
               :selected="selectedCompanies"
               :departments="getData.departments"/>
@@ -15,13 +20,20 @@
 
   </section>
   <section class="relations p-d-flex p-flex-column">
-    <Person v-for="relation in filterPeople(relatedPeople)"
+    <div class="results" v-if="filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length < 1">
+      Geen resultaten.
+    </div>
+    <div class="results" v-else>
+      {{ filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox).length}} gevonden resultaten.
+    </div>
+    <Person v-for="relation in filterPeople(relatedPeople, ageRange, companyFunction, sexCheckbox)"
             v-bind:key="relation.id"
             v-on:get-company="getCompany"
             v-on:get-age="getAge"
             v-on:get-relations="getRelationsToSelected"
             :selected="relation"
             :xDomain="xDomain"/>
+
   </section>
 
 
@@ -51,7 +63,7 @@ export default {
       type: Array
     }
   },
-  emits: ["get-person", "add-related"],
+  emits: ["getNewPerson", "add-related"],
   components: {
     FilterMenu,
     Nav,
@@ -62,15 +74,17 @@ export default {
       relatedPeople: this.related,
       relationTypes: ["Familie", "Werk", "School"],
       ageRange: [1950, 2021],
-      xDomain: [],
+      xDomain: [1950, 2021],
       companyFunction: ["Senior Employee", "Junior Employee", "Manager"],
       sexCheckbox: ["Man", "Vrouw"],
       selectedCompanies: null,
       networkHome: this.home,
-      networkItems: this.items
+      networkItems: this.items,
+
     }
   },
-  mounted() {
+  beforeMount() {
+
     let dates = [];
     let schoolStartDates = [];
     let schoolEndDates = [];
@@ -86,10 +100,13 @@ export default {
         schoolEndDates.push(school.endDate)
       })
     })
+
+    // HIER ZIT HET PROBLEEM
     this.ageRange = [Math.min(...dates), Math.max(...dates)]
     this.xDomain = [Math.min(...schoolStartDates) -5, Math.max(...schoolEndDates) +5]
   },
   methods: {
+
     getCompany(id) {
       let company = this.getData.departments.find(department => department.id === id);
       console.log('currr', company)
@@ -100,7 +117,6 @@ export default {
     },
     // https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
     getAge(birthDate) {
-
       var today = new Date();
       var dateOfBirth = new Date(birthDate);
       var age = today.getFullYear() - dateOfBirth.getFullYear();
@@ -110,14 +126,63 @@ export default {
       }
       return age;
     },
-    filterPeople(relatedPeople) {
-      console.log('RelatedPeople', relatedPeople);
-      return relatedPeople.filter(person => {
+    filterPeople(relatedPeople, ageRange, companyFunction, sex) {
+      console.log('companyfunction=', companyFunction);
 
-        console.log(parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]);
-        return parseInt(person.date_of_birth.slice(0, 4)) > this.ageRange[0]
-            && parseInt(person.date_of_birth.slice(0, 4)) < this.ageRange[1]
+      let filteredByBirthDate = relatedPeople.filter(person => {
+        return parseInt(person.date_of_birth.slice(0, 4)) > ageRange[0]
+            && parseInt(person.date_of_birth.slice(0, 4)) < ageRange[1]
       })
+      let filteredByFunction = filteredByBirthDate.filter(person => {
+        let getPosition = null;
+        switch (person.position) {
+          case "YOUNG_FEMALE_EMPLOYEE" || "YOUNG_MALE_EMPLOYEE":
+            getPosition = "Junior Employee"
+            break;
+          case "SEN_FEMALE_EMPLOYEE" || "SEN_MALE_EMPLOYEE":
+            getPosition = "Senior Employee"
+            break;
+          case "MANAGER":
+            getPosition = "Manager"
+            break;
+        }
+        console.log('CompanyThing', companyFunction.includes(getPosition));
+        if(companyFunction.includes(getPosition)){
+          getPosition = null;
+          return person
+        }
+      })
+
+      let filteredBySex = filteredByFunction.filter(person => {
+        let getSex = null;
+        switch (person.sex) {
+          case "FEMALE":
+            getSex = "VROUW"
+            break;
+          case "MALE":
+            getSex = "MAN"
+            break;
+        }
+        if(sex.map(name => name.toUpperCase()).includes(getSex)){
+          getSex = null;
+          return person
+        }
+      })
+      console.log('ByBirthDate', filteredByBirthDate);
+      console.log('ByFunction', filteredByFunction);
+      console.log('BySex', filteredBySex);
+      return filteredBySex;
+
+    },
+    getAgeRange(ageRange) {
+      this.ageRange = ageRange;
+    },
+    getCompanyFunction(companyFunction) {
+      console.log('HEY!')
+      this.companyFunction = companyFunction;
+    },
+    getSex(sex) {
+      this.sexCheckbox = sex;
     },
     addRelatedPeople(bsn) {
       let newRelation = this.getData.people.find(person => person.node_id === parseInt(bsn));
@@ -178,20 +243,41 @@ export default {
     grid-row-start: 4;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: 2em;
+
+    overflow-y: scroll;
+    height: 28em;
+  }
+  /* width */
+  .relations::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  .relations::-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  .relations::-webkit-scrollbar-thumb {
+    background: #909090;
+    border-radius: 10px;
+    width: 5px;
+  }
+
+  /* Handle on hover */
+  .relations::-webkit-scrollbar-thumb:hover {
+    background: #1F1F1E;
   }
   .filter-menu {
     padding-left: 6em;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: fixed;
-
     height: 100%;
     margin-bottom: 5em;
-    top:200px;
-    bottom:0;
-    left: 0;
+    grid-column-start: 1;
+    grid-row-start: 3;
   }
   .function, .sex, .relation-types, .companies {
     display: flex;
@@ -199,5 +285,8 @@ export default {
     justify-content: flex-start;
     align-items: flex-start;
   }
-
+  .results {
+    font-weight: bold;
+    font-size: .8em;
+  }
 </style>

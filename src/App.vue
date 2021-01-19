@@ -1,7 +1,7 @@
 <template>
 
   <router-view :getData="dataState"
-               v-on:get-person="getPerson"
+               v-on:getNewPerson="getPerson"
                v-on:add-related="addRelatedPeople"
                :bsnError="bsnError"
                :selected="selected"
@@ -67,6 +67,7 @@ export default {
   },
   methods: {
     getPerson(bsn) {
+      console.log('hello', bsn);
       this.selected = this.dataState.people.find(person => person.node_id === parseInt(bsn));
       this.bsnError = !this.selected;
 
@@ -90,6 +91,9 @@ export default {
   font-family: "AvenirNext-Bold";
   src: local("AvenirNext-Bold"),
   url(./assets/fonts/AvenirNext-Bold.ttf) format("truetype");
+}
+body {
+  overflow: hidden;
 }
 #app {
   font-family: AvenirNext-Regular, Helvetica, Arial, sans-serif;
@@ -145,13 +149,19 @@ export default {
   color: white;
 }
 .y-axis {
-  color: white;
+  opacity:0;
 }
 .network .domain:first-of-type {
-  color: rgb(247 247 247);
+  color: rgb(0,0,0);
 }
-.network .y-axis {
-  color: rgb(247 247 247);
+.network .y-axis .domain {
+  opacity:0;
+}
+.network .tick line{
+  opacity:0;
+}
+.relations .tick {
+  color: rgb(255 255 255);
 }
 .tooltip {
   position: absolute;
@@ -214,5 +224,9 @@ li .p-menuitem-text {
 }
 .p-slider.p-slider-horizontal {
   height: 0.186rem;
+}
+.relations svg:first-of-type {
+  border-bottom: dotted 2px;
+  /*border-top: dotted 2px;*/
 }
 </style>
