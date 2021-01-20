@@ -1,9 +1,9 @@
 <template>
   <Breadcrumb :home="breadcrumbHome" :model="breadcrumbs" class="breadcrumbs"/>
 
-  <form class="searchbar" @submit.prevent="$emit('get-person', newID)">
+  <form class="searchbar" @submit.prevent="$emit('set-person', bsn)">
     <span class="p-input-icon-left">
-        <i class="pi pi-search" @click="$emit('get-person', newID)"/>
+        <i class="pi pi-search" @click="$emit('set-person', bsn)"/>
         <InputText type="text" v-model="bsn" placeholder="Zoek naar een BSN" />
     </span>
   </form>
@@ -34,7 +34,7 @@ export default {
     InputText,
     Breadcrumb
   },
-  emits: ["get-person"],
+  emits: ["set-person"],
   props: {
     networkHome: {
       type: Object
@@ -46,12 +46,11 @@ export default {
   data() {
     return {
       breadcrumbs: this.networkItems,
-      breadcrumbHome: this.networkHome,
-      newID: this.bsn
+      breadcrumbHome: this.networkHome
     }
   },
   setup() {
-    let bsn = ref();
+    let bsn = ref(null);
     return { bsn }
   },
   mounted() {

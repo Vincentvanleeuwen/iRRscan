@@ -1,5 +1,6 @@
 <template>
-    <div class="person">
+
+    <div class="person" >
       <div class="card-container">
         <Card class="card">
           <template #header>
@@ -12,16 +13,20 @@
             {{getPosition(selected.position)}}
           </template>
           <template #content>
-            <!--          {{relationsToSelected}}-->
-            <div class="relation-color"
-                 v-for="(relationType,index) in relationsToSelected"
-                 v-bind:key="index">
+            <div class="relation-container">
+
+              <div class="relation-color"
+                   v-for="relationType in relations"
+                   v-bind:key="relationType"
+                  :style="{backgroundColor: getColor(relationType)}">
+              </div>
             </div>
+
           </template>
         </Card>
         <div class="dropdown-menu">
-          <Button label="Vergelijken" class="p-button-secondary" />
-          <Button label="Bovenaan" class="p-button-secondary" />
+          <Button label="Vergelijken" class="p-button-secondary" @click="$emit('compare-person', selected)"/>
+          <Button label="Bovenaan" class="p-button-secondary" @click="$emit('set-person', selected.node_id)"/>
           <div class="stick-out">
             <i class="pi pi-angle-down"></i>
           </div>
@@ -36,31 +41,23 @@
 import Card from 'primevue/card';
 import Button from 'primevue/button'
 import ClevelandPlot from "@/components/ClevelandPlot";
-import { onMounted } from "@vue/runtime-core";
-import { ref } from "vue";
+import { onBeforeMount } from "@vue/runtime-core";
+
 
 export default {
   name: "Person",
-  props: ["selected", "xDomain"],
-  emits: ["get-company", "get-age", "get-relations"],
+  props: ["selected", "xDomain", "relations"],
+  emits: ["get-company", "get-age", "get-relations", "compare-person", "set-person"],
   components: {
     Card,
     ClevelandPlot,
     Button
   },
   setup(props, { emit }) {
-    let relationsToSelected = ref([]);
-
-    onMounted(() => {
-      // console.log(this.selected,this.xDomain)
-      relationsToSelected.value = emit("get-relations", props.selected.node_id);
-      console.log('relationsToSelected', relationsToSelected.value);
+    onBeforeMount(() => {
+      emit("get-relations", props.selected.node_id);
     });
-    return { relationsToSelected }
   },
- // mounted() {
- //   this.relationsToSelected = this.$emit("get-relations", this.selected.node_id)
- // },
   methods: {
     getPosition(position) {
       switch(position) {
@@ -74,6 +71,13 @@ export default {
           return "Senior werkneemster"
         case "MANAGER":
           return "Manager"
+      }
+    },
+    getColor(relation) {
+      switch(relation) {
+        case "work": return "#7BC4AF"
+        case "family": return "#58838B"
+        case "school": return "#FC9F55"
       }
     }
   }
@@ -93,7 +97,12 @@ export default {
   height:100%;
   z-index: 5;
   position: relative;
+  padding: 0;
 }
+.network .card {
+  border: 2px solid #495057;
+}
+
 .network .dropdown-menu {
   display: none;
 }
@@ -137,6 +146,21 @@ export default {
   flex-direction: row;
   padding: 1em;
   align-items: center;
+}
+.network .relation-container{
+  display: none;
+}
+.relation-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-left: .5em;
+  align-items: flex-end;
+}
+.relation-color {
+  width: 1em;
+  height: .5em;
+  margin: 0 .1em;
 }
 /* Change card style of primevue card*/
 .p-card-header img {

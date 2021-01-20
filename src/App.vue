@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     getPerson(bsn) {
-      console.log('hello', bsn);
       this.selected = this.dataState.people.find(person => person.node_id === parseInt(bsn));
       this.bsnError = !this.selected;
 
@@ -144,6 +143,9 @@ body {
   justify-content: flex-start;
   padding-left: .5rem;
   margin-bottom: 0.25rem!important;
+}
+.network .p-card-content {
+  display: none;
 }
 .domain:first-of-type {
   color: white;
