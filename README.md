@@ -99,7 +99,7 @@ Je kunt nu het project bekijken op localhost:8080/
 
 icov-relatiescan.netlify.app
 
-![Vue D3 Graph](https://github.com/Vincentvanleeuwen/frontend-applications/blob/main/public/media/preview.gif)
+![Vue D3 iCOV](https://github.com/Vincentvanleeuwen/iRRscan/blob/main/src/assets/img/preview.png)
 
 ## Bronnen
 
