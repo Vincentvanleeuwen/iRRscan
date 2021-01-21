@@ -31,10 +31,8 @@ export const restructureData = arr => {
       }
 
       collection.forEach(attribute => {
-
         if(attribute.AttributeClassReference === "iCOV_node_type"){
           if (attribute.Value === "PEOPLE") {
-            console.log('Created new Person')
             correctType = {
               id: null, // = [anb.xml] _ID
               node_id: null, // = [anb.xml] iCOV_node_id
@@ -49,7 +47,6 @@ export const restructureData = arr => {
             };
 
           } else if (attribute.Value === "DEPARTMENT") {
-            console.log('Created new Department')
             correctType = {
               id: null, // = [anb.xml] _DEPARTMENT_ID
               node_id: null, // = [anb.xml] iCOV_node_id
@@ -59,7 +56,6 @@ export const restructureData = arr => {
               relations: []
             };
           } else if (attribute.Value === "ADDRESS") {
-            console.log('Created new Address')
             correctType = {
               node_id: null, // = [anb.xml] iCOV_node_id
               country: null, // = [anb.xml] _COUNTRY
@@ -73,7 +69,6 @@ export const restructureData = arr => {
 
           }
         }
-
       })
 
       // Check if there is an address, person or company

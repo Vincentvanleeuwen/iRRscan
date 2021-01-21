@@ -10,12 +10,21 @@
       <p> Dit BSN is niet in ons systeem bekend.</p>
     </section>
   </section>
-
-<!--  <div v-for="person in getData.people"-->
-<!--       v-bind:key="person.id">-->
-<!--      {{ person.name}}-->
-<!--  </div>-->
-
+  <section class="examples">
+    <h2> List of example people </h2>
+    <div class="example-person">
+      <h4> Neena Kochhhar </h4>
+      <p> 2458288 </p>
+    </div>
+    <div class="example-person">
+      <h4> Steven King </h4>
+      <p> 2458292 </p>
+    </div>
+    <div class="example-person">
+      <h4> Eleni Zlotkey </h4>
+      <p> 2458654</p>
+    </div>
+  </section>
 </template>
 
 <script>
@@ -55,6 +64,10 @@ export default {
   flex-direction: column;
   min-height: calc(100vh - 20vh);
   position: relative;
+}
+.examples {
+  grid-row-start: 3;
+  margin-left: 5em;
 }
 .searchbar {
   margin: auto;

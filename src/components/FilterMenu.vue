@@ -140,13 +140,6 @@ export default {
       selectedCompanies: this.selected,
       companies: this.departments,
     }
-  },
-
-  watch:{
-    age: function(newVal, oldVal){
-      console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-
-    }
   }
 }
 </script>

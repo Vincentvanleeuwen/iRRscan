@@ -35,12 +35,13 @@ export default {
       .append("g")
       .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
     // Add X axis
-    // console.log(this.selectedUser.name, this.xDomain);
     var x = scaleLinear()
       .domain(this.domainX)
       .range([ 0, width]);
 
+    // Connect X axis to svg object
     svg.append("g")
       .attr("transform", "translate(0," + height + ")")
       .attr("stroke-width","3")
@@ -52,17 +53,19 @@ export default {
       .domain([this.selected.name])
       .padding(1);
 
+    // Connect Y axis to svg object
     svg.append("g")
     .attr('class', 'y-axis')
     .call(axisLeft(y))
 
+    // Create a lolly group
     const lolly = svg.selectAll(".lolly")
       .data(this.selectedUser.school_history)
         .enter().append('g')
           .attr('class', 'lolly');
-    // Add tooltip
 
 
+    // Add a lolly stick to the lolly group
     lolly.selectAll('.stick')
         .data(d => [d])
         .enter()
@@ -74,19 +77,8 @@ export default {
           .attr("y2", y(this.selectedUser.name))
           .attr("stroke", "#1FB52C")
           .attr("stroke-width", "5px")
-
-   lolly.selectAll('.base-line')
-        .enter()
-        .append("line")
-          .attr('class', 'base-line')
-          .attr("x1", x(this.domainX[0]))
-          .attr("x2", x(this.domainX[1]))
-          .attr("y1",  y(this.selectedUser.name))
-          .attr("y2", y(this.selectedUser.name))
-          .attr("stroke", "#909090")
-          .attr("stroke-width", "1px")
-
-
+    
+    // Add a lolly pop to the lolly group
     lolly.selectAll("circleOne")
       .data(d => [d])
       .enter()
@@ -110,7 +102,7 @@ export default {
 
         });
 
-
+    // Add a second lolly pop to the lolly group
     lolly.selectAll("circleTwo")
       .data(d => [d])
       .enter()
@@ -120,28 +112,29 @@ export default {
         .attr("r", "6")
         .style("fill", "#1FB52C")
 
+    // Add a third lolly pop to the lolly group
     lolly.selectAll("circleThree")
-    .data(d => [d])
-    .enter()
-    .append("circle")
-    .attr("cx", function(d) { return x(d.startDate + 1); })
-    .attr("cy", y(this.selectedUser.name))
-    .attr("r", "6")
-    .style("fill", "#3CDBC4")
-    .on("mouseover", (event) => {
+      .data(d => [d])
+      .enter()
+      .append("circle")
+        .attr("cx", function(d) { return x(d.startDate + 1); })
+        .attr("cy", y(this.selectedUser.name))
+        .attr("r", "6")
+        .style("fill", "#3CDBC4")
+        .on("mouseover", (event) => {
 
-      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
-      .transition().duration(200).style('opacity', .9);
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
+          .transition().duration(200).style('opacity', .9);
 
-      console.log('d=', event.pageX, event.pageY);
-      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
-      .style('left', `${event.pageX }px`)
-      .style('top', `${event.pageY }px`);
-    })
-    .on('mouseout', () => {
-      select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line').transition().duration(500).style('opacity', 0);
+          console.log('d=', event.pageX, event.pageY);
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line')
+          .style('left', `${event.pageX }px`)
+          .style('top', `${event.pageY }px`);
+        })
+        .on('mouseout', () => {
+          select("#" + this.selected.name.replace(/\s/g, '').toLowerCase() + 'vertical-line').transition().duration(500).style('opacity', 0);
 
-    });
+        });
   }
 }
 </script>

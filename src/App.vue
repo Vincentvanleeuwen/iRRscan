@@ -1,5 +1,4 @@
 <template>
-
   <router-view :getData="dataState"
                v-on:getNewPerson="getPerson"
                v-on:add-related="addRelatedPeople"
@@ -21,19 +20,20 @@ import { restructureData } from "@/helpers/restructureData";
 import router from './router/index'
 import { addSchoolHistory } from "@/helpers/addSchoolHistory";
 const endPoints = [
-  // "./data/nodes.json",
   "./data/anb.json",
   "./data/edges.json"
 ];
 export default {
   name: "App",
   setup() {
+    // Get data, set selected and related people.
     let dataState = ref([]);
     let error = ref(null);
     let bsnError = ref(null);
     let selected = ref(null);
     let relatedPeople = ref([]);
 
+    // Filter and restructure the data set
     onMounted(() => {
       fetchData(endPoints)
       .then(convertToJSON)
@@ -57,6 +57,7 @@ export default {
   },
   data() {
     return {
+      // Add a fake breadcrumb
       home: {label: "BSN zoeken", to: '/'},
       items: [
         {label: 'Steven King'},
@@ -66,6 +67,7 @@ export default {
     }
   },
   methods: {
+    // Get person from bsn
     getPerson(bsn) {
       this.selected = this.dataState.people.find(person => person.node_id === parseInt(bsn));
       this.bsnError = !this.selected;

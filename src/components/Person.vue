@@ -59,6 +59,7 @@ export default {
     });
   },
   methods: {
+    // Set the position name of function
     getPosition(position) {
       switch(position) {
         case "YOUNG_MALE_EMPLOYEE":
@@ -73,6 +74,7 @@ export default {
           return "Manager"
       }
     },
+    // Show correct color
     getColor(relation) {
       switch(relation) {
         case "work": return "#7BC4AF"

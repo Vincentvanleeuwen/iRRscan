@@ -96,8 +96,6 @@ export default {
     }
   },
   beforeMount() {
-
-
     // Add all related people in a separate Array
     this.selected.relations.forEach(relation => {
       return this.addRelatedPeople(relation[1]);
@@ -106,6 +104,7 @@ export default {
    this.setAgeRange(this.relatedPeople);
   },
   methods: {
+    // Replace bsn with a new person
     setNewPerson(id) {
       this.firstSelected = this.getData.people.find(person => {
         if(person.node_id === parseInt(id)) {
@@ -120,14 +119,15 @@ export default {
       this.secondSelected = null;
       this.setAgeRange(this.relatedPeople);
     },
+    // Get company name
     getCompany(id) {
       let company = this.getData.departments.find(department => department.id === id);
-      console.log('currr', company)
       if(!company) {
         return "No Company Found"
       }
       return company.name;
     },
+    // Get age from birthdate
     // https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
     getAge(birthDate) {
       var today = new Date();
@@ -139,6 +139,7 @@ export default {
       }
       return age;
     },
+    // Add filters, by age, function and sex
     filterPeople(relatedPeople, ageRange, companyFunction, sex) {
 
       let filteredByBirthDate = relatedPeople.filter(person => {
@@ -181,15 +182,19 @@ export default {
         }
       });
     },
+    // Set age range on update
     getAgeRange(ageRange) {
       this.ageRange = ageRange;
     },
+    // Set company function on update
     getCompanyFunction(companyFunction) {
       this.companyFunction = companyFunction;
     },
+    // Set sex on update
     getSex(sex) {
       this.sexCheckbox = sex;
     },
+    // Add the related people in a new array
     addRelatedPeople(bsn) {
       let newRelation = this.getData.people.find(person => person.node_id === parseInt(bsn));
       if(newRelation) {
@@ -197,8 +202,8 @@ export default {
       }
       newRelation = null;
     },
+    // Add relationtype to each relation
     getRelationsToSelected(id) {
-      // console.log(this.selected, id)
       let relationTypes = [];
       this.selected.relations.forEach(relation => {
         if(relation[1] === id){
@@ -224,6 +229,7 @@ export default {
       })
       this.relationFromPerson = relationTypes;
     },
+    // Compare two people
     comparePerson(person) {
       this.relatedPeople = []
       this.secondSelected = person;
@@ -243,6 +249,7 @@ export default {
       })
       console.log('after', this.relatedPeople);
     },
+    // Set the age range slider in the filter menu.
     setAgeRange(people) {
       let dates = [];
       let schoolStartDates = [];
